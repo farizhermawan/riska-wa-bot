@@ -31,10 +31,10 @@ const initialize = (bot) => {
     let profile = await service.login(payload.id);
     if (profile.error) {
       console.log(`Registering ${payload.name} [${payload.id}]`);
-      console.log(service.storeToken(payload));
+      service.storeToken(payload);
     } else {
       console.log(`Update session for ${payload.name} [${payload.id}]`);
-      console.log(service.updateToken(payload));
+      service.updateToken(payload);
     }
 
     bot = payload;

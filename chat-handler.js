@@ -37,13 +37,12 @@ module.exports = {
       client.sendMessage(msg.from, 'Quran for life, Mumtaaz!');
     }
 
-    let response = await service.storeInbox(client.info.me.user, {
+    service.storeInbox(client.info.me.user, {
       from: msg.from,
       sender_id: sender.id.user,
       sender_name: sender.pushname || sender.name,
       group: chat.isGroup ? chat.name : null,
       message: msg.body
     });
-    console.log(response);
   }
 };
