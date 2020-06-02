@@ -30,5 +30,12 @@ module.exports = {
       body:    JSON.stringify({status: 'SENT'}),
       headers: { 'Content-Type': 'application/json' },
     });
-  }
+  },
+  storeInbox: (whatsapp_id, payload) => {
+    fetch(`${config.api_endpoint}/${whatsapp_id}/inboxes/`, {
+      method: 'post',
+      body:    JSON.stringify(payload),
+      headers: { 'Content-Type': 'application/json' },
+    });
+  },
 };

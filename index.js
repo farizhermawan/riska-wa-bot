@@ -22,14 +22,15 @@ const initialize = (bot) => {
     console.error('AUTHENTICATION FAILURE', msg);
   });
 
-  client.on('ready', () => {
+  client.on('ready', async () => {
     let payload = {
       id: client.info.me.user,
       name: client.info.pushname,
       session: bot.session
     };
 
-    if (bot.id == null) {
+    let profile = await service.login(payload.id);
+    if (profile.error) {
       console.log(`Registering ${payload.name} [${payload.id}]`);
       service.storeToken(payload);
     } else {
@@ -37,17 +38,22 @@ const initialize = (bot) => {
       service.updateToken(payload);
     }
 
+    bot = payload;
     console.log('Client is ready!');
 
     setInterval(() => {
       let run = async () => {
         try {
           let pendingOutboxes = await service.getPendingOutboxes(bot.id);
-          if (pendingOutboxes.data.length > 0) {
-            let outbox = pendingOutboxes.data[0];
-            console.log(`Sending a message from pending outbox [${outbox.id}]`);
-            client.sendMessage(outbox.to, outbox.message, outbox.option || {});
-            service.markAsSent(bot.id, outbox.id);
+          if (pendingOutboxes.error) {
+            console.error(pendingOutboxes);
+          } else {
+            if (pendingOutboxes.data.length > 0) {
+              let outbox = pendingOutboxes.data[0];
+              console.log(`Sending a message from pending outbox [${outbox.id}]`);
+              client.sendMessage(outbox.to, outbox.message, outbox.option || {});
+              service.markAsSent(bot.id, outbox.id);
+            }
           }
         } catch (e) {
           console.log(e);
