@@ -72,10 +72,14 @@ prompt.start();
 prompt.get(['whatsapp_id'], async function (err, result) {
   let credential = {id: null, name: null, session: null};
   if (result.whatsapp_id.length > 0) {
-    let response = await service.login(result.whatsapp_id);
-    if (response.error) {
-      console.error(json);
-      process.exit(1);
+    try {
+      let response = await service.login(result.whatsapp_id);
+      if (response.error) {
+        console.error(json);
+        process.exit(1);
+      }
+    } catch (e) {
+      console.error(e.message);
     }
     credential = response;
   }
