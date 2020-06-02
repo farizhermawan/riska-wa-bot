@@ -1,4 +1,3 @@
-const prompt = require('prompt');
 const qrcode = require('qrcode-terminal');
 const { Client } = require('whatsapp-web.js');
 const service = require('./service');
@@ -75,12 +74,13 @@ const initialize = (bot) => {
   client.initialize();
 };
 
-prompt.start();
-prompt.get(['whatsapp_id'], async function (err, result) {
+const main = async () => {
+  const args = process.argv.slice(2);
   let credential = {id: null, name: null, session: null};
-  if (result.whatsapp_id.length > 0) {
+  if (args[0]) {
+    console.log({msg: "resuming instance.."});
     try {
-      let response = await service.login(result.whatsapp_id);
+      let response = await service.login(args[0]);
       if (response.error) {
         console.error(response);
         process.exit();
@@ -92,7 +92,9 @@ prompt.get(['whatsapp_id'], async function (err, result) {
   }
   else console.log({msg: "start new instance.."});
   initialize(credential);
-});
+};
+
+main();
 
 process.on('uncaughtException', (e) => {
   console.error(e);
