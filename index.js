@@ -7,9 +7,6 @@ const handler = require('./chat-handler');
 const initialize = (bot) => {
   const client = new Client({
     session: bot.session,
-    puppeteer: {
-      executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-    }
   });
 
   client.on('qr', qr => {
