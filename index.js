@@ -76,7 +76,7 @@ prompt.get(['whatsapp_id'], async function (err, result) {
       let response = await service.login(result.whatsapp_id);
       if (response.error) {
         console.error(response);
-        process.exit(1);
+        process.exit();
       }
     } catch (e) {
       console.error(e.message);
