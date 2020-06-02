@@ -87,3 +87,8 @@ prompt.get(['whatsapp_id'], async function (err, result) {
 process.on('uncaughtException', (e) => {
   console.error(e);
 });
+
+process.on('unhandledRejection', (e, p) => {
+  console.log(p);
+  console.log(e);
+});
