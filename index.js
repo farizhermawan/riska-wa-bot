@@ -83,5 +83,6 @@ prompt.get(['whatsapp_id'], async function (err, result) {
     }
     credential = response;
   }
+  else console.log({msg: "start new instance.."});
   initialize(credential);
 });
