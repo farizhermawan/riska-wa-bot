@@ -41,12 +41,16 @@ const initialize = (bot) => {
 
     setInterval(() => {
       let run = async () => {
-        let pendingOutboxes = await service.getPendingOutboxes(bot.id);
-        if (pendingOutboxes.data.length > 0) {
-          let outbox = pendingOutboxes.data[0];
-          console.log(`Sending a message from pending outbox [${outbox.id}]`);
-          client.sendMessage(outbox.to, outbox.message, outbox.option || {});
-          service.markAsSent(bot.id, outbox.id);
+        try {
+          let pendingOutboxes = await service.getPendingOutboxes(bot.id);
+          if (pendingOutboxes.data.length > 0) {
+            let outbox = pendingOutboxes.data[0];
+            console.log(`Sending a message from pending outbox [${outbox.id}]`);
+            client.sendMessage(outbox.to, outbox.message, outbox.option || {});
+            service.markAsSent(bot.id, outbox.id);
+          }
+        } catch (e) {
+          console.log(e);
         }
       };
 
