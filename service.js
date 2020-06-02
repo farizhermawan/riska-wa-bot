@@ -31,11 +31,11 @@ module.exports = {
       headers: { 'Content-Type': 'application/json' },
     });
   },
-  storeInbox: (whatsapp_id, payload) => {
-    fetch(`${config.api_endpoint}/${whatsapp_id}/inboxes/`, {
+  storeInbox: async (whatsapp_id, payload) => {
+    return await fetch(`${config.api_endpoint}/${whatsapp_id}/inboxes/`, {
       method: 'post',
       body:    JSON.stringify(payload),
       headers: { 'Content-Type': 'application/json' },
-    });
+    }).then(res => res.json());
   },
 };
