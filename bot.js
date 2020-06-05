@@ -3,6 +3,7 @@ const { Client } = require('whatsapp-web.js');
 const service = require('./service');
 const handler = require('./chat-handler');
 const config = require('./config');
+const log = require('simple-node-logger').createSimpleLogger('console.log');
 
 const initialize = (bot) => {
   const client = new Client({
@@ -15,14 +16,14 @@ const initialize = (bot) => {
   });
 
   client.on('authenticated', (session) => {
-    console.log("Authentication success");
+    log.info("Authentication success");
     bot.session = session;
   });
 
   client.on('auth_failure', async () => {
-    console.error('AUTHENTICATION FAILURE');
+    log.error('AUTHENTICATION FAILURE');
     await service.logout(bot.id);
-    console.log('Session has been removed, please try to re-run');
+    log.info('Session has been removed, please try to re-run');
   });
 
   client.on('ready', async () => {
@@ -34,32 +35,32 @@ const initialize = (bot) => {
 
     let profile = await service.login(payload.id);
     if (profile.error) {
-      console.log(`Registering ${payload.name} [${payload.id}]`);
+      log.info(`Registering ${payload.name} [${payload.id}]`);
       service.storeToken(payload);
     } else {
-      console.log(`Update session for ${payload.name} [${payload.id}]`);
+      log.info(`Update session for ${payload.name} [${payload.id}]`);
       service.updateToken(payload);
     }
 
     bot = payload;
-    console.log('Client is ready!');
+    log.info('Client is ready!');
 
     setInterval(() => {
       let run = async () => {
         try {
           let pendingOutboxes = await service.getPendingOutboxes(bot.id);
           if (pendingOutboxes.error) {
-            console.error(pendingOutboxes);
+            log.error(pendingOutboxes);
           } else {
             if (pendingOutboxes.data.length > 0) {
               let outbox = pendingOutboxes.data[0];
-              console.log(`Sending a message from pending outbox [${outbox.id}]`);
+              log.info(`Sending a message from pending outbox [${outbox.id}]`);
               client.sendMessage(outbox.to, outbox.message, outbox.option || {});
               service.markAsSent(bot.id, outbox.id);
             }
           }
         } catch (e) {
-          console.log(e);
+          log.info(e);
         }
       };
 
@@ -78,25 +79,20 @@ const initialize = (bot) => {
   client.initialize();
 };
 
-const main = async () => {
-  let credential = {id: config.instance_id, name: null, session: null};
-  console.log({msg: `try to resuming instance.. [${credential.id}]`});
-  try {
-    let response = await service.login(credential.id);
-    if (response.error) {
-      console.error(response);
-      process.exit();
+module.exports = {
+  run: async () => {
+    let credential = {id: config.instance_id, name: null, session: null};
+    log.info(`try to resuming instance.. [${credential.id}]`);
+    try {
+      let response = await service.login(credential.id);
+      if (response.error) {
+        log.error(response);
+        process.exit();
+      }
+      credential = response;
+    } catch (e) {
+      log.error(e.message);
     }
-    credential = response;
-  } catch (e) {
-    console.error(e.message);
+    initialize(credential);
   }
-  initialize(credential);
 };
-
-main();
-
-process.on('uncaughtException', (e) => {
-  console.error(e);
-});
-
