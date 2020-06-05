@@ -12,7 +12,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node --no-warnings index.js",
+    "start": "node --no-warnings web.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Fariz Hermawan",
