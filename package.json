@@ -1,6 +1,6 @@
 {
   "name": "riska-wa-bot",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Bot to reply customer and automation of registration flow for RISKA",
   "main": "index.js",
   "dependencies": {
