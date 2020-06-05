@@ -9,6 +9,9 @@ const initialize = (bot) => {
   const client = new Client({
     session: bot.session,
     authTimeoutMs: 5000,
+    puppeteer: {
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    }
   });
 
   client.on('qr', qr => {
