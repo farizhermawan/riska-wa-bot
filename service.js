@@ -23,6 +23,9 @@ module.exports = {
   login: async (whatsapp_id) => {
     return await fetch(`${config.api_endpoint}/${whatsapp_id}`).then(res => res.json());
   },
+  logout: async (whatsapp_id) => {
+    return await fetch(`${config.api_endpoint}/${whatsapp_id}`, put({session: null})).then(res => res.json());
+  },
   storeToken: async (payload) => {
     return await fetch(config.api_endpoint, post(payload)).then(res => res.json());
   },

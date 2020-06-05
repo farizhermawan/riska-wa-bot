@@ -2,10 +2,12 @@ const qrcode = require('qrcode-terminal');
 const { Client } = require('whatsapp-web.js');
 const service = require('./service');
 const handler = require('./chat-handler');
+const config = require('./config');
 
 const initialize = (bot) => {
   const client = new Client({
     session: bot.session,
+    authTimeoutMs: 5000,
   });
 
   client.on('qr', qr => {
@@ -17,8 +19,10 @@ const initialize = (bot) => {
     bot.session = session;
   });
 
-  client.on('auth_failure', msg => {
-    console.error('AUTHENTICATION FAILURE', msg);
+  client.on('auth_failure', async () => {
+    console.error('AUTHENTICATION FAILURE');
+    await service.logout(bot.id);
+    console.log('Session has been removed, please try to re-run');
   });
 
   client.on('ready', async () => {
@@ -75,22 +79,18 @@ const initialize = (bot) => {
 };
 
 const main = async () => {
-  const args = process.argv.slice(2);
-  let credential = {id: null, name: null, session: null};
-  if (args[0]) {
-    console.log({msg: "resuming instance.."});
-    try {
-      let response = await service.login(args[0]);
-      if (response.error) {
-        console.error(response);
-        process.exit();
-      }
-      credential = response;
-    } catch (e) {
-      console.error(e.message);
+  let credential = {id: config.instance_id, name: null, session: null};
+  console.log({msg: `try to resuming instance.. [${credential.id}]`});
+  try {
+    let response = await service.login(credential.id);
+    if (response.error) {
+      console.error(response);
+      process.exit();
     }
+    credential = response;
+  } catch (e) {
+    console.error(e.message);
   }
-  else console.log({msg: "start new instance.."});
   initialize(credential);
 };
 
