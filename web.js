@@ -7,7 +7,7 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/console.log');
 });
 
-http.listen(3000, () => {
+http.listen(process.env.PORT || 3000, () => {
   log.info('listening on *:3000');
 });
 
