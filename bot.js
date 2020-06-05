@@ -89,6 +89,7 @@ module.exports = {
         log.error(response);
         process.exit();
       }
+      log.info(response);
       credential = response;
     } catch (e) {
       log.error(e.message);
