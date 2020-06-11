@@ -15,6 +15,7 @@ const initialize = (bot) => {
   });
 
   client.on('qr', qr => {
+    log.info('QR RECEIVED', qr);
     qrcode.generate(qr, {small: true});
   });
 
