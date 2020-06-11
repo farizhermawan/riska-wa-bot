@@ -5,6 +5,8 @@ const handler = require('./chat-handler');
 const config = require('./config');
 const log = require('simple-node-logger').createSimpleLogger('console.log');
 
+let qrCode = null;
+
 const initialize = (bot) => {
   const client = new Client({
     session: bot.session,
@@ -15,19 +17,21 @@ const initialize = (bot) => {
   });
 
   client.on('qr', qr => {
-    log.info('QR RECEIVED', qr);
     qrcode.generate(qr, {small: true});
+    qrCode = qr;
   });
 
   client.on('authenticated', (session) => {
     log.info("Authentication success");
     bot.session = session;
+    qrCode = null;
   });
 
   client.on('auth_failure', async () => {
     log.error('AUTHENTICATION FAILURE');
     await service.logout(bot.id);
     log.info('Session has been removed, please try to re-run');
+    qrCode = null;
   });
 
   client.on('ready', async () => {
@@ -98,5 +102,8 @@ module.exports = {
       log.error(e.message);
     }
     initialize(credential);
+  },
+  qr: () => {
+    return qrCode;
   }
 };
