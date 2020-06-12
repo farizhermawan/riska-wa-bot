@@ -21,8 +21,4 @@ http.listen(process.env.PORT || 3000, () => {
   log.info('listening on *:3000');
 });
 
-process.on('uncaughtException', (e) => {
-  console.error(e);
-});
-
 bot.run();
