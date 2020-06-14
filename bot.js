@@ -70,7 +70,7 @@ const initialize = (bot) => {
             }
           }
         } catch (e) {
-          log.info(e);
+          console.error(e);
         }
       };
 
