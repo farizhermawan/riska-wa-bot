@@ -32,6 +32,7 @@ const initialize = (bot) => {
     await service.logout(bot.id);
     log.info('Session has been removed, please try to re-run');
     qrCode = null;
+    process.exit(1);
   });
 
   client.on('ready', async () => {

@@ -1,5 +1,6 @@
 const app = require('express')();
 const http = require('http').createServer(app);
+const qr = require("qr-image");
 const log = require('simple-node-logger').createSimpleLogger('console.log');
 const bot = require('./bot');
 
