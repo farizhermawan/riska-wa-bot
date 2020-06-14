@@ -12,8 +12,7 @@ app.get('/qr', (req, res) => {
   const qrCode = bot.qr();
   if (qrCode == null) res.send('QR not ready!');
   else {
-    console.log(qrCode);
-    const image = qr.image(bot.qr, { type: 'svg' });
+    const image = qr.image(qrCode, { type: 'svg' });
     res.type('svg');
     image.pipe(res);
   }
