@@ -63,7 +63,9 @@ const initialize = (bot) => {
             if (pendingOutboxes.data.length > 0) {
               let outbox = pendingOutboxes.data[0];
               log.info(`Sending a message from pending outbox [${outbox.id}]`);
-              client.sendMessage(outbox.to, outbox.message, outbox.option || {});
+              if (bot.id !== outbox.to.substr(0, outbox.to.length - 5)) {
+                client.sendMessage(outbox.to, outbox.message, outbox.option || {});
+              }
               service.markAsSent(bot.id, outbox.id);
             }
           }
