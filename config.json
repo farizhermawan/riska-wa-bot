@@ -1,4 +1,9 @@
 {
   "api_endpoint": "https://api.riska.or.id/v1/whatsapp-bots",
-  "instance_id": "6281292803570"
+  "instance_id": "6281292803570",
+  "admins": ["6281210260155"],
+  "simple_rules": {
+    "riska": "Muda, Gaul, Berkarya!",
+    "bmaq": "Quran for life, Mumtaaz!"
+  }
 }

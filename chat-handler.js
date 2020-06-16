@@ -1,6 +1,27 @@
 'use strict';
 
 const service = require('./service');
+const admins = require('./config').admins;
+const simpleRules = require('./config').simple_rules;
+
+const isAdmin = (sender) => {
+  return admins.indexOf(sender.replace('@c.us', '')) !== -1;
+};
+
+const getUptime = () => {
+  function format(param){
+    let sec_num = parseInt(param, 10);
+    let hours   = Math.floor(sec_num / 3600);
+    let minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+    let seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+    if (hours   < 10) hours   = "0"+hours;
+    if (minutes < 10) minutes = "0"+minutes;
+    if (seconds < 10) seconds = "0"+seconds;
+    return hours+':'+minutes+':'+seconds;
+  }
+  return format(process.uptime());
+};
 
 module.exports = {
   onMessageDelete: async (client, after, before) => {
@@ -24,7 +45,7 @@ module.exports = {
 
     let isMentioned = false;
     for(let contact of mentions) {
-      if (contact.verifiedName === 'R.I.S.K.A Tech') isMentioned = true;
+      if (contact.verifiedName === client.info.pushname) isMentioned = true;
     }
 
     if (message === 'hi') {
@@ -33,12 +54,10 @@ module.exports = {
       });
     }
 
-    if (message === 'riska') {
-      client.sendMessage(msg.from, 'Muda, Gaul, Berkarya!');
-    }
+    if (simpleRules[message]) client.sendMessage(msg.from, simpleRules[message]);
 
-    if (message === 'bmaq') {
-      client.sendMessage(msg.from, 'Quran for life, Mumtaaz!');
+    if (!chat.isGroup && isAdmin(msg.from)) {
+      if (message === 'uptime') client.sendMessage(msg.from, getUptime());
     }
 
     service.storeInbox(client.info.me.user, {
