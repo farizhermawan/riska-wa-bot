@@ -1,9 +1,14 @@
 const qrcode = require('qrcode-terminal');
 const { Client } = require('whatsapp-web.js');
+const { WebClient } = require('@slack/web-api');
+
 const service = require('./service');
 const handler = require('./chat-handler');
 const config = require('./config');
+
 const log = require('simple-node-logger').createSimpleLogger('console.log');
+const slack = new WebClient(process.env.SLACK_TOKEN);
+const conversationId = 'DA88YJ3AB';
 
 let qrCode = null;
 
@@ -25,6 +30,7 @@ const initialize = (bot) => {
     log.info("Authentication success");
     bot.session = session;
     qrCode = null;
+    slack.chat.postMessage({ channel: conversationId, text: 'Starting new session!' });
   });
 
   client.on('auth_failure', async () => {
@@ -32,6 +38,16 @@ const initialize = (bot) => {
     await service.logout(bot.id);
     log.info('Session has been removed, please try to re-run');
     qrCode = null;
+    slack.chat.postMessage({ channel: conversationId, text: 'Authentication failure!' });
+    process.exit(1);
+  });
+
+  client.on('disconnected', async () => {
+    log.info('Client was logged out');
+    await service.logout(bot.id);
+    log.info('Session has been removed, please try to re-run');
+    qrCode = null;
+    slack.chat.postMessage({ channel: conversationId, text: 'Session disconnected!' });
     process.exit(1);
   });
 
