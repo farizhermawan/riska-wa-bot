@@ -8,7 +8,7 @@ const config = require('./config');
 
 const log = require('simple-node-logger').createSimpleLogger('console.log');
 const slack = new WebClient(process.env.SLACK_TOKEN);
-const conversationId = 'DA88YJ3AB';
+const conversationId = process.env.CHANNEL_ID;
 
 let qrCode = null;
 
