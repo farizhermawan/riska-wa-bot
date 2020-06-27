@@ -11,6 +11,7 @@ const slack = new WebClient(process.env.SLACK_TOKEN);
 const conversationId = process.env.CHANNEL_ID;
 
 let qrCode = null;
+let botInfo = null;
 
 const initialize = (bot) => {
   const client = new Client({
@@ -57,6 +58,8 @@ const initialize = (bot) => {
       name: client.info.pushname,
       session: bot.session
     };
+
+    botInfo = client.info.pushname;
 
     let profile = await service.login(payload.id);
     if (profile.error) {
@@ -124,5 +127,8 @@ module.exports = {
   },
   qr: () => {
     return qrCode;
+  },
+  info: () => {
+    return botInfo;
   }
 };
