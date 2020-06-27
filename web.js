@@ -1,6 +1,7 @@
 const app = require('express')();
 const http = require('http').createServer(app);
 const qr = require("qr-image");
+const { WebClient } = require('@slack/web-api');
 const log = require('simple-node-logger').createSimpleLogger('console.log');
 const bot = require('./bot');
 
