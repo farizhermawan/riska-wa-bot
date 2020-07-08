@@ -12,6 +12,7 @@ const conversationId = process.env.CHANNEL_ID;
 
 let qrCode = null;
 let botInfo = null;
+let isResuming = false;
 
 const initialize = (bot) => {
   const client = new Client({
@@ -23,6 +24,12 @@ const initialize = (bot) => {
   });
 
   client.on('qr', qr => {
+    if (isResuming) {
+      log.info('Session is not valid anymore, please try to re-run');
+      qrCode = null;
+      slack.chat.postMessage({ channel: conversationId, text: 'Session expired!' });
+      process.exit(1);
+    }
     qrcode.generate(qr, {small: true});
     qrCode = qr;
   });
@@ -110,7 +117,7 @@ const initialize = (bot) => {
 };
 
 module.exports = {
-  run: async () => {
+  run: async (resuming) => {
     let credential = {id: config.instance_id, name: null, session: null};
     log.info(`try to resuming instance.. [${credential.id}]`);
     try {
@@ -123,7 +130,16 @@ module.exports = {
     } catch (e) {
       log.error(e.message);
     }
-    initialize(credential);
+    if (resuming === false) {
+      isResuming = false;
+      initialize(credential);
+    }
+    else {
+      if (credential.session !== null) {
+        isResuming = true;
+        initialize(credential);
+      }
+    }
   },
   qr: () => {
     return qrCode;

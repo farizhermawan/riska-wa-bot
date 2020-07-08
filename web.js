@@ -8,8 +8,6 @@ const bot = require('./bot');
 const slack = new WebClient(process.env.SLACK_TOKEN);
 const conversationId = process.env.CHANNEL_ID;
 
-let runBot = false;
-
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/console.log');
 });
@@ -28,15 +26,19 @@ app.get('/qr', (req, res) => {
   }
 });
 
-app.get('/bot', (req, res) => {
-  if (!runBot) {
-    runBot = true;
-    bot.run();
+app.get('/run', (req, res) => {
+  const botInfo = bot.info();
+  const qrCode = bot.qr();
+  if (botInfo == null && qrCode == null) {
+    bot.run(false);
+    res.send('Bot triggered, open QR to connect!');
   }
-  res.send('Bot triggered, open QR to connect!');
+  else res.send('Already logged in' + (botInfo === null ? '!' : ' as ' + botInfo));
 });
 
 http.listen(process.env.PORT || 3000, () => {
   log.info('listening on *:3000');
   slack.chat.postMessage({ channel: conversationId, text: 'Application restarted!' });
 });
+
+bot.run(true);
