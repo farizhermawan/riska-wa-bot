@@ -13,7 +13,7 @@
       "response": "Wa'alaikumussalam ka @user"
     },
     {
-      "pattern": "^(hi|halo)",
+      "pattern": "^(hi|halo) ",
       "mention_only": true,
       "reply": true,
       "response": "Hi juga ka @user"
