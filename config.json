@@ -3,10 +3,13 @@
   "instance_id": "6281292803570",
   "admins": ["6281210260155"],
   "simple_rules": {
-    "riska": "Muda, Gaul, Berkarya!",
     "bmaq": "Quran for life, Mumtaaz!"
   },
   "rules": [
+    {
+      "pattern": "^risk(a|a+)(!|!+|)$",
+      "response": "Muda, Gaul, Berkarya!"
+    },
     {
       "pattern": "assalamu",
       "reply": true,
