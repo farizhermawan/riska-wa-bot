@@ -112,7 +112,12 @@ module.exports = {
 
     if (!chat.isGroup && isAdmin(msg.from)) {
       if (message === 'uptime') client.sendMessage(msg.from, getUptime());
-      else if (message.indexOf('unblock') !== -1) {
+      else if (message.indexOf('block ') !== -1) {
+        let args = message.split(' ');
+        recent[args[1]].blocked = true;
+        client.sendMessage(msg.from, 'Done bosqu.');
+      }
+      else if (message.indexOf('unblock ') !== -1) {
         let args = message.split(' ');
         recent[args[1]].blocked = false;
         client.sendMessage(msg.from, 'Done bosqu.');
