@@ -61,6 +61,8 @@ module.exports = {
       if (contact.verifiedName === client.info.pushname) isMentioned = true;
     }
 
+    if (msg.length === 0) return;
+
     if (typeof recent[sender.id.user] === 'undefined') recent[sender.id.user] = {last_message: message, count: 1, blocked: false};
     else {
       if (recent[sender.id.user].blocked) return;
