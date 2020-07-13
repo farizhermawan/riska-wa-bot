@@ -1,8 +1,9 @@
 'use strict';
 
-const service = require('./service');
+// const service = require('./service');
 const admins = require('./config').admins;
 const simpleRules = require('./config').simple_rules;
+const rules = require('./config').rules;
 
 const isAdmin = (sender) => {
   return admins.indexOf(sender.replace('@c.us', '')) !== -1;
@@ -66,16 +67,51 @@ module.exports = {
 
     if (simpleRules[message]) client.sendMessage(msg.from, simpleRules[message]);
 
-    if (!chat.isGroup && isAdmin(msg.from)) {
-      if (message === 'uptime') client.sendMessage(msg.from, getUptime());
+    for (let i=0; i<rules.length; i++) {
+      let rule = rules[i];
+      if (new RegExp(rule.pattern).test(message)) {
+        if (rule.mention_only && !isMentioned) continue;
+
+        let response = rule.response;
+        let option = {};
+        if (rule.response.indexOf('@user') !== -1) {
+          response = rule.response.replace('@user', `@${sender.id.user}`);
+          option = {mentions: [sender]};
+        }
+
+        if (rule.reply) msg.reply(response, msg.from, option);
+        else client.sendMessage(msg.from, response, option);
+
+        break;
+      }
     }
 
-    service.storeInbox(client.info.me.user, {
-      from: msg.from,
-      sender_id: sender.id.user,
-      sender_name: sender.pushname || sender.name,
-      group: chat.isGroup ? chat.name : null,
-      message: msg.body
-    });
+    if (!chat.isGroup && isAdmin(msg.from)) {
+      if (message === 'uptime') client.sendMessage(msg.from, getUptime());
+      else if (message === 'sync') {
+        const BPH = await client.getChatById("6289523931573-1557316322@g.us");
+        const RISKA = await client.getChatById("6285691535219-1484634629@g.us");
+
+        let membersOfBph = BPH.participants.map((value, index) => value.id.user);
+        let membersOfRiska = RISKA.participants.map((value, index) => value.id.user);
+
+        let notAddedMember = [];
+        membersOfBph.forEach((memberOfBph, index) => {
+          if (membersOfRiska.indexOf(memberOfBph) === -1) notAddedMember.push(memberOfBph);
+        });
+
+        client.sendMessage(msg.from, "Ada " + notAddedMember.length + " BPH yang belum di add ke group RISKA");
+        await RISKA.addParticipants(notAddedMember.map(value => value + '@c.us'));
+        client.sendMessage(msg.from, "Semua member BPH berhasil di add ke group RISKA");
+      }
+    }
+
+    // service.storeInbox(client.info.me.user, {
+    //   from: msg.from,
+    //   sender_id: sender.id.user,
+    //   sender_name: sender.pushname || sender.name,
+    //   group: chat.isGroup ? chat.name : null,
+    //   message: msg.body
+    // });
   }
 };

@@ -5,5 +5,18 @@
   "simple_rules": {
     "riska": "Muda, Gaul, Berkarya!",
     "bmaq": "Quran for life, Mumtaaz!"
-  }
+  },
+  "rules": [
+    {
+      "pattern": "assalamu",
+      "reply": true,
+      "response": "Wa'alaikumussalam ka @user"
+    },
+    {
+      "pattern": "^(hi|halo)",
+      "mention_only": true,
+      "reply": true,
+      "response": "Hi juga ka @user"
+    }
+  ]
 }
