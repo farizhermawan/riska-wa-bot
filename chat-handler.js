@@ -86,7 +86,7 @@ module.exports = {
       });
     }
 
-    if (simpleRules[message]) client.sendMessage(msg.from, simpleRules[message]);
+    // if (simpleRules[message]) client.sendMessage(msg.from, simpleRules[message]);
 
     for (let i=0; i<rules.length; i++) {
       let rule = rules[i];

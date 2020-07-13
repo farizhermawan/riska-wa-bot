@@ -2,13 +2,18 @@
   "api_endpoint": "https://api.riska.or.id/v1/whatsapp-bots",
   "instance_id": "6281292803570",
   "admins": ["6281210260155"],
-  "simple_rules": {
-    "bmaq": "Quran for life, Mumtaaz!"
-  },
   "rules": [
     {
       "pattern": "^risk(a|a+)(!|!+|)$",
       "response": "Muda, Gaul, Berkarya!"
+    },
+    {
+      "pattern": "^bmaq(!|!+|)$",
+      "response": "Fun, Smart, Mumtaaz!"
+    },
+    {
+      "pattern": "^(sc|sister club)(!|!+|)$",
+      "response": "Fun, Smart, Beauty!"
     },
     {
       "pattern": "assalamu",
