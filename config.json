@@ -8,6 +8,11 @@
       "response": "Muda, Gaul, Berkarya!"
     },
     {
+      "pattern": "^takb(i|i+)(r|r+)(!|!+|)$",
+      "response": "Allahuakbar!",
+      "reply": true
+    },
+    {
       "pattern": "^bmaq(!|!+|)$",
       "response": "Fun, Smart, Mumtaaz!"
     },
