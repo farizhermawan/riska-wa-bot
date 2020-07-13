@@ -34,6 +34,8 @@ const getUptime = () => {
   return format(process.uptime());
 };
 
+const recent = {};
+
 module.exports = {
   onMessageDelete: async (client, after, before) => {
     // if (before && before.body.length > 0) {
@@ -57,6 +59,25 @@ module.exports = {
     let isMentioned = false;
     for(let contact of mentions) {
       if (contact.verifiedName === client.info.pushname) isMentioned = true;
+    }
+
+    if (typeof recent[sender.id.user] === 'undefined') recent[sender.id.user] = {last_message: message, count: 1, blocked: false};
+    else {
+      if (recent[sender.id.user].blocked) return;
+
+      if (recent[sender.id.user].last_message === message) {
+        let count = recent[sender.id.user].count + 1;
+        recent[sender.id.user].count = count;
+        if (count === 2) {
+          client.sendMessage(msg.from, "jangan spam ya, nanti aku cuekin.");
+        } else {
+          recent[sender.id.user].blocked = true;
+          client.sendMessage(msg.from, "fix aku cuekin!");
+        }
+      } else {
+        recent[sender.id.user].last_message = message;
+        recent[sender.id.user].count = 1;
+      }
     }
 
     if (message === 'hi') {
@@ -88,6 +109,11 @@ module.exports = {
 
     if (!chat.isGroup && isAdmin(msg.from)) {
       if (message === 'uptime') client.sendMessage(msg.from, getUptime());
+      else if (message.indexOf('unblock') !== -1) {
+        let args = message.split(' ');
+        recent[args[1]].blocked = false;
+        client.sendMessage(msg.from, 'Done bosqu.');
+      }
       else if (message === 'sync') {
         const BPH = await client.getChatById("6289523931573-1557316322@g.us");
         const RISKA = await client.getChatById("6285691535219-1484634629@g.us");
