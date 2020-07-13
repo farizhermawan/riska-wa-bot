@@ -74,6 +74,7 @@ module.exports = {
           recent[sender.id.user].blocked = true;
           client.sendMessage(msg.from, "fix aku cuekin!");
         }
+        return;
       } else {
         recent[sender.id.user].last_message = message;
         recent[sender.id.user].count = 1;
