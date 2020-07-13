@@ -35,15 +35,15 @@ const getUptime = () => {
 
 module.exports = {
   onMessageDelete: async (client, after, before) => {
-    if (before && before.body.length > 0) {
-      if (client.info.me.user === before.from.substr(0, before.from.length - 5)) return;
-      const user = await before.getContact();
-      client.sendMessage(before.from, `Udah kebaca @${user.id.user} 😋`, {mentions: [user]});
-      client.sendMessage(before.from, `-->  ${before.body}`);
-    } else {
-      if (client.info.me.user === after.from.substr(0, after.from.length - 5)) return;
-      client.sendMessage(after.from, 'Ah gak sempet baca 🤨');
-    }
+    // if (before && before.body.length > 0) {
+    //   if (client.info.me.user === before.from.substr(0, before.from.length - 5)) return;
+    //   const user = await before.getContact();
+    //   client.sendMessage(before.from, `Udah kebaca @${user.id.user} 😋`, {mentions: [user]});
+    //   client.sendMessage(before.from, `-->  ${before.body}`);
+    // } else {
+    //   if (client.info.me.user === after.from.substr(0, after.from.length - 5)) return;
+    //   client.sendMessage(after.from, 'Ah gak sempet baca 🤨');
+    // }
   },
   onMessageReceived: async (client, msg) => {
     if (client.info.me.user === msg.from.substr(0, msg.from.length - 5)) return;
